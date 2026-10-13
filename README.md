@@ -169,7 +169,10 @@ npm run dev
 # Run ESLint
 npm run lint
 
-# Run Vitest
+# Download Chromium for the browser tests (once)
+npx playwright-core install chromium
+
+# Run Vitest: SSR tests, and browser tests with a fake EIP-6963 wallet
 npm run test
 
 # Type check
