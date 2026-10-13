@@ -1,10 +1,12 @@
 # nuxt-wallet-kit
 
+[![npm version][npm-version-src]][npm-version-href]
+[![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
 Zero-config [wagmi](https://wagmi.sh) for Nuxt: SSR-safe wallet state and ready-to-use [Nuxt UI](https://ui.nuxt.com) wallet components.
 
-> Status: early version, not published on npm yet.
+> Status: early version (0.x). The API may still change before 1.0.
 
 ## Why
 
@@ -209,6 +211,12 @@ To try the playground, use a browser wallet extension with a dedicated account t
 ## License
 
 MIT
+
+[npm-version-src]: https://img.shields.io/npm/v/nuxt-wallet-kit/latest.svg?style=flat&colorA=020420&colorB=00DC82
+[npm-version-href]: https://npmjs.com/package/nuxt-wallet-kit
+
+[license-src]: https://img.shields.io/npm/l/nuxt-wallet-kit.svg?style=flat&colorA=020420&colorB=00DC82
+[license-href]: https://npmjs.com/package/nuxt-wallet-kit
 
 [nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt
 [nuxt-href]: https://nuxt.com

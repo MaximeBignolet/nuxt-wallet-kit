@@ -2,7 +2,26 @@
   "name": "nuxt-wallet-kit",
   "version": "0.1.0",
   "description": "Zero-config wagmi for Nuxt: SSR-safe wallet state and Nuxt UI wallet components",
-  "repository": "MaximeBignolet/nuxt-wallet-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaximeBignolet/nuxt-wallet-kit.git"
+  },
+  "homepage": "https://github.com/MaximeBignolet/nuxt-wallet-kit#readme",
+  "bugs": {
+    "url": "https://github.com/MaximeBignolet/nuxt-wallet-kit/issues"
+  },
+  "author": "Maxime Bignolet",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "wagmi",
+    "viem",
+    "web3",
+    "ethereum",
+    "wallet",
+    "eip-6963",
+    "nuxt-ui"
+  ],
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -30,7 +49,7 @@
     "dev": "npm run dev:prepare && nuxt dev playground",
     "dev:build": "nuxt build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
