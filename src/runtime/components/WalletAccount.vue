@@ -6,7 +6,7 @@ import UButton from '@nuxt/ui/components/Button.vue';
 import UDropdownMenu from '@nuxt/ui/components/DropdownMenu.vue';
 import { useWallet } from '../composables/useWallet';
 
-const { address, chain, chainId, chains, disconnect, displayName, isSwitchingChain, isWrongChain, labels, switchChain } = useWallet();
+const { address, chain, chainId, chains, disconnect, displayName, isSwitchingChain, isVerified, isWrongChain, labels, switchChain } = useWallet();
 const toast = useToast();
 
 const explorerUrl = computed(() => {
@@ -54,7 +54,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 ]);
 
 function copyAddress() {
-	if (!address.value) {
+	if (!address.value || !isVerified.value) {
 		return;
 	}
 	navigator.clipboard.writeText(address.value)
@@ -77,6 +77,7 @@ function notifyError(message: string) {
 			variant="outline"
 			:icon="isWrongChain ? `i-lucide-triangle-alert` : `i-lucide-wallet`"
 			:label="isWrongChain ? labels.wrongNetwork : displayName"
+			:loading="!isVerified"
 		/>
 	</UDropdownMenu>
 </template>

@@ -23,6 +23,7 @@ export const useWallet = () => {
 	});
 
 	const isConnected = computed(() => Boolean(address.value));
+	const isVerified = computed(() => status.value === `connected`);
 	const isWrongChain = computed(() => isConnected.value && !chain.value);
 	const shortAddress = computed(() => address.value ? `${address.value.slice(0, 6)}…${address.value.slice(-4)}` : undefined);
 	const displayName = computed(() => ensName.value ?? shortAddress.value);
@@ -56,6 +57,7 @@ export const useWallet = () => {
 		ensName,
 		isConnected,
 		isSwitchingChain: computed(() => switchStatus.value === `pending`),
+		isVerified,
 		isWrongChain,
 		labels,
 		shortAddress,

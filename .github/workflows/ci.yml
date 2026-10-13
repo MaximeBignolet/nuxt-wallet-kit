@@ -8,21 +8,24 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.21.0
 
-      - run: npm i -g --force corepack@latest && corepack enable
-
       - name: Install dependencies
-        run: npx nypm@latest i
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -31,16 +34,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.21.0
 
-      - run: npm i -g --force corepack@latest && corepack enable
-
       - name: Install dependencies
-        run: npx nypm@latest i
+        run: npm ci
 
       - name: Playground prepare
         run: npm run dev:prepare

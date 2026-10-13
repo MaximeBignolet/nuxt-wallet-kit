@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
-import { setup, $fetch } from '@nuxt/test-utils/e2e';
+import { setup, $fetch, fetch } from '@nuxt/test-utils/e2e';
 import { serialize } from '@wagmi/core';
 
 const ADDRESS = `0x1111111111111111111111111111111111111111`;
@@ -61,5 +61,24 @@ describe(`ssr`, async () => {
 	it(`ignores a malformed wallet cookie`, async () => {
 		const html = await $fetch<string>(`/`, { headers: { cookie: `wagmi.store={broken` } });
 		expect(html).toContain(`<p data-testid="status">disconnected</p>`);
+	});
+
+	it(`still renders the page when the wallet cookie has a forged shape`, async () => {
+		const forged = `wagmi.store=${JSON.stringify({ state: { connections: {}, current: `u`, chainId: SEPOLIA_ID }, version: 3 })}`;
+		const response = await fetch(`/`, { headers: { cookie: forged } });
+		expect(response.status).toBe(200);
+		expect(await response.text()).toContain(`<p data-testid="status">disconnected</p>`);
+	});
+
+	it(`does not render an account that is not a valid address`, async () => {
+		const forged = walletCookie().replace(ADDRESS, `<img src=x onerror=alert(1)>`);
+		const html = await $fetch<string>(`/`, { headers: { cookie: forged } });
+		expect(html).toContain(`<p data-testid="status">disconnected</p>`);
+		expect(html).not.toContain(`onerror`);
+	});
+
+	it(`disables the account menu until the wallet confirms the cookie`, async () => {
+		const html = await $fetch<string>(`/`, { headers: { cookie: walletCookie() } });
+		expect(html).toMatch(/<button[^>]*disabled[^>]*>(?:(?!<\/button>).)*0x1111…1111/s);
 	});
 });

@@ -111,7 +111,8 @@ Works with or without Nuxt UI.
 | `displayName` | `ComputedRef<string \| undefined>` | ENS name, or the short address |
 | `chain` / `chainId` / `chains` | | Active chain and configured chains |
 | `status` | `Ref<'connected' \| 'connecting' \| 'reconnecting' \| 'disconnected'>` | wagmi connection status |
-| `isConnected` | `ComputedRef<boolean>` | `true` as soon as an address is known, including while reconnecting after a reload |
+| `isConnected` | `ComputedRef<boolean>` | `true` as soon as an address is known, including while reconnecting after a reload. **The address may not be verified yet**, see [Security](#security) |
+| `isVerified` | `ComputedRef<boolean>` | `true` once the wallet itself has confirmed the address. Gate every action on this, not on `isConnected` |
 | `isWrongChain` | `ComputedRef<boolean>` | Connected to a chain that is not configured |
 | `connect(connector)` | | Connect with a wagmi connector |
 | `connectingUid` / `connectErrorMessage` | | Loading and error state of `connect`, scoped to the component that called it |
@@ -143,7 +144,29 @@ const walletModal = useWalletModal();
 
 wagmi stores the connection (address, chain id, connector name) in a cookie. On each request, the module reads that cookie and hands the same initial state to the server render and to the browser, so both render the same HTML. The real reconnection to the wallet extension only happens in the browser, after the app is mounted.
 
-The cookie only holds public data: no private key or signature ever goes through the module. Signing and sending transactions always happens in the user's wallet, which asks for confirmation.
+No private key or signature ever goes through the module. Signing and sending transactions always happens in the user's wallet, which asks for confirmation.
+
+## Security
+
+**The wallet cookie is not a proof of anything.** Anyone can edit their own cookies, and an attacker able to set cookies on your domain (a compromised subdomain, an XSS, a network attacker on plain HTTP) can write any address into it. The module treats it accordingly:
+
+- The cookie is strictly validated before use: wrong shape, invalid or badly checksummed address, unknown connection. Anything unexpected is ignored and the visitor is rendered as disconnected, so a forged cookie can never crash the page.
+- Until the wallet confirms the address after the page loads, `isVerified` is `false`, the account button shows a loading state and is disabled, and the address cannot be copied. A forged address the wallet does not confirm is dropped.
+- On HTTPS, the cookie is written with the `Secure` attribute.
+
+What it means for your app:
+
+- **Never use `address` on the server to authorize anything or to load private data.** On the server, it only comes from the cookie. To identify a wallet on your backend, make the user sign a message (Sign-In with Ethereum) and verify the signature on the server.
+- **Gate actions on `isVerified`**, not on `isConnected`.
+- Serve your site over HTTPS only, with [HSTS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security), so the cookie cannot be injected over plain HTTP.
+
+### Privacy
+
+The cookie contains the user's public wallet address and is sent to your server with every request, so it can end up in server logs, analytics or CDN logs. A wallet address can be linked to a person, so mention this cookie in your privacy and cookie policy.
+
+### Supply chain
+
+Wallet libraries are a known target for supply-chain attacks. `wagmi` and `viem` are published with npm provenance, and so should any release of this module. Keep your lockfile committed and review dependency updates before merging them.
 
 ## Limitations
 

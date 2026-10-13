@@ -1,9 +1,10 @@
 import { defineNuxtPlugin, useRequestHeaders, useRuntimeConfig } from '#app';
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
 import { hydrate } from '@wagmi/core';
-import { configKey, cookieStorage, cookieToInitialState, createConfig, createStorage, http, injected } from '@wagmi/vue';
+import { configKey, createConfig, createStorage, http, injected } from '@wagmi/vue';
 import type { Transport } from 'viem';
 import { chains, chainsByName } from '#wallet-kit/chains';
+import { readWalletState, walletCookieStorage } from './utils/walletCookie';
 
 export default defineNuxtPlugin({
 	name: `wallet-kit`,
@@ -21,12 +22,12 @@ export default defineNuxtPlugin({
 			chains,
 			connectors: [injected()],
 			ssr: true,
-			storage: createStorage({ storage: cookieStorage }),
+			storage: createStorage({ storage: walletCookieStorage }),
 			transports,
 		});
 
 		const { onMount } = hydrate(config, {
-			initialState: cookieToInitialState(config, cookie),
+			initialState: readWalletState(config, cookie),
 			reconnectOnMount: true,
 		});
 

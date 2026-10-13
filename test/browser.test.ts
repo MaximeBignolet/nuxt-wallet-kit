@@ -79,6 +79,26 @@ describe(`browser`, async () => {
 		await page.close();
 	}, TEST_TIMEOUT);
 
+	it(`drops a forged account that the wallet does not confirm`, async () => {
+		const { page } = await openPage();
+		const forged = JSON.stringify({
+			state: {
+				connections: { __type: `Map`, value: [[`u`, { accounts: [`0x2222222222222222222222222222222222222222`], chainId: SEPOLIA_ID, connector: { id: `test.wallet`, name: `Test Wallet`, type: `injected`, uid: `u` } }]] },
+				current: `u`,
+				chainId: SEPOLIA_ID,
+			},
+			version: 3,
+		});
+		await page.evaluate((value) => {
+			document.cookie = `wagmi.store=${value};path=/`;
+		}, forged);
+
+		const response = await page.goto(url(`/`), { waitUntil: `hydration` });
+		expect(await response?.text()).toContain(`0x2222…2222`);
+		await page.getByRole(`button`, { name: `Connecter un wallet` }).waitFor();
+		await page.close();
+	}, TEST_TIMEOUT);
+
 	it(`disconnects from the account menu and stays disconnected after a reload`, async () => {
 		const { page } = await openPage();
 		await connect(page);
