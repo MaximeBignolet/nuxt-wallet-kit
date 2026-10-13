@@ -9,6 +9,9 @@ export default defineNuxtPlugin({
 	name: `wallet-kit`,
 	setup(nuxtApp) {
 		const { rpcUrls } = useRuntimeConfig().public.walletKit;
+		const cookie = import.meta.server
+			? useRequestHeaders([`cookie`]).cookie
+			: document.cookie;
 
 		const transports: Record<number, Transport> = Object.fromEntries(
 			Object.entries(chainsByName).map(([name, chain]) => [chain.id, http(rpcUrls[name] || undefined)]),
@@ -21,10 +24,6 @@ export default defineNuxtPlugin({
 			storage: createStorage({ storage: cookieStorage }),
 			transports,
 		});
-
-		const cookie = import.meta.server
-			? useRequestHeaders([`cookie`]).cookie
-			: document.cookie;
 
 		const { onMount } = hydrate(config, {
 			initialState: cookieToInitialState(config, cookie),
