@@ -4,7 +4,7 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-Zero-config [wagmi](https://wagmi.sh) for Nuxt: SSR-safe wallet state and ready-to-use [Nuxt UI](https://ui.nuxt.com) wallet components.
+Zero-config [wagmi](https://wagmi.sh) for Nuxt web3 apps: SSR-safe Ethereum wallet state and ready-to-use [Nuxt UI](https://ui.nuxt.com) wallet components.
 
 > Status: early version (0.x). The API may still change before 1.0.
 
